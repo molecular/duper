@@ -94,8 +94,9 @@ usage:\n\tduper.js <directory> [<substring>:<preference>]*\n\n\
 with\n\
 	<directory> \tthe folder to scan for duplicates\n\
 	<substring> \tstring to use for matching filename (incl. path)\n\
-	<preference> \t[keep|delete] the action to take if filename (incl. path) matches <substring>\n\
+	<preference> \t[keep|delete] the action to preferrably take if filename (incl. path) matches <substring>\n\
 how it works:\n\n\
+	see README.md\n\
 ");
 
 // parse cmdline args
@@ -115,7 +116,6 @@ _.map(
 	}
 );
 
-console.log('perferences', prefs)
 // scan filesystem recursively, clustering files by size into global by_size
 
 console.log( '\nscanning filesystem...' );
@@ -126,7 +126,7 @@ adddir( dir, (progress) => {
 		var pstr = _.map( progress, (p) => {
 			return "" + p.current + '/' + p.count;
 		}).join( ' ' );
-		process.stdout.write( 'scanning progress: ' + pstr + '                                          \r');
+		process.stdout.write( 'scanning progress: ' + pstr + '                                                                                          \r');
 	}
 });
 
@@ -139,7 +139,7 @@ console.log('found', _.keys( dupes_by_size ).length, 'clusters by size match' );
 
 // hash the duplicate files, clustering by file hash
 
-console.log( '\ncalculating file hashes... (using ' + hash_sampling_percent + '% sampling)' );
+console.log( '\ncalculating file hashes of file in equally-sized clusters... (using ' + hash_sampling_percent + '% content sampling)' );
 var flat_dupes = _.flattenDeep( dupes_by_size );
 flat_dupes.forEach( (file) => {
 	addfile_by_hash( file, (count) => {
@@ -233,3 +233,4 @@ console.log("(", deletion_list.length, "files )");
 
 var dest_dir = dir.split('/').slice(0, -1).join('/') + '/removed_by_duper(' + dir.split('/').slice(-1)[0] + ')';
 remove_files( dir, dest_dir, deletion_list );
+console.log("", deletion_list.length, "files have been moved to", dest_dir);
