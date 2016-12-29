@@ -120,6 +120,7 @@ Here's a short, unsorted list of user-cases / todos
  * currently, *all* files are checked. Some pre-filtering could be appropriate.
  * partial content hashing ("hash_sampling_percent") isn't as effective as expected. some research might be adequate.
  * limiting rule-matching to only the path/filename ans simple substring matching is probably inadequate for many use-cases
+ * in addition to removal of a file, hard-/sym-links could be placed as done in http://doubles.sourceforge.net/
 
 ## outro
 
