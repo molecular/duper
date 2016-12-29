@@ -3,7 +3,7 @@ var _ = require('lodash');
 var crypto = require('crypto');
 var fs_extra = require('fs-extra');
 
-const hash_sampling_percent = 0.2; // what percentage of files to sample when hashing (100 = no sampling)
+const hash_sampling_percent = 100; // what percentage of files to sample when hashing (100 = no sampling)
 const dry_run = false;
 
 function adddir( path, progress_callback, progress ) {

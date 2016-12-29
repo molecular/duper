@@ -1,6 +1,6 @@
 # duper
 
-finds duplicate files (based on content) and moves them elsewhere for manual review / deletion
+finds duplicate files (based on content being identical) and moves them elsewhere for manual review / deletion
 
 ## installation / dependencies
 
@@ -24,6 +24,14 @@ with
         <preference>    [keep|delete] the action to take if filename (incl. path) matches <substring>
 
 ```
+
+## examples
+
+```
+> node ~/duper/duper.js /mnt/haven/m Kopie:delete by_artist:keep
+```
+
+files containing 'Kopie' in their path or name will be preferred for removal, files containing 'by_artist' in their path or name will be protected from removal.
 
 ## what it does
 
@@ -80,9 +88,6 @@ In case the variable `dry_run` is true, instead of actually doing anything, dupe
 
 Otherwise duper actually modifies your filesystem. Files are not deleted, however, but moved to a different location. This destination directory will be created by duper and called `removed_by_duper(<n>)` where <n> is the name of the `<directory>` supplied on the commandline. It will be placed on the same level as <n>. Files are moved *including* their directory structure (starting from `<directory>`)
 
-## examples
-
-TODO
 
 ## caveats
 
