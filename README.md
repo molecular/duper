@@ -1,6 +1,6 @@
 # duper
 
-finds duplicate files (based on content being identical) and moves them elsewhere for manual review / deletion
+finds duplicate files (based on content being identical) and moves them elsewhere (retaining directory structure) for manual review / deletion
 
 ## installation / dependencies
 
