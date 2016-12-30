@@ -137,7 +137,7 @@ adddir( dir, (progress) => {
 dupes_by_size = _.filter( by_size, (entry) => {
 	return entry.length > 1;
 });
-console.log("dupes_by_size", dupes_by_size);
+//console.log("dupes_by_size", dupes_by_size);
 console.log('found', _.keys( dupes_by_size ).length, 'clusters by size match' );
 
 
