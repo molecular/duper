@@ -158,7 +158,6 @@ Here's a short, unsorted list of user-cases / todos
  * limiting rule-matching to only the path/filename ans simple substring matching is probably inadequate for many use-cases
  * rule-matching by substring is hacky at best. False positives are likely. thought needed.
  * in addition to removal of a file, hard-/sym-links could be placed as done in http://doubles.sourceforge.net/
- * in addition to the 'keep' and 'delete' actions, maybe a 'protect' would make sense and a relaxing of the 'keep' action that works like 'protect' currently.
  * 'undo' mode would be good that moves files back from the "removed_by_duper(<dir>)" directory
  * regarding my use-case (audio files) it might be desirable to determine file equality diffently, for example by only looking at the (encoded) audio data, not the meta tags. The existance of two audio files that only differ in their metadata seems to be quite common (at least in my dataset) and can be explained by use tag-modifying software (taggers).
 
