@@ -5,7 +5,7 @@ var fs_extra = require('fs-extra');
 
 const hash_sampling_percent = 0.1; // what percentage of files to sample when hashing (100 = no sampling)
 const dry_run = false;
-const blocksize = 1024;
+const blocksize = 512;
 
 function adddir( path, progress_callback, progress ) {
 	//console.log("adddir( " + path + " )" );
