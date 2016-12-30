@@ -155,6 +155,7 @@ Here's a short, unsorted list of user-cases / todos
  * limiting rule-matching to only the path/filename ans simple substring matching is probably inadequate for many use-cases
  * rule-matching by substring is hacky at best. False positives are likely. thought needed.
  * in addition to removal of a file, hard-/sym-links could be placed as done in http://doubles.sourceforge.net/
+ * in addition to the 'keep' and 'delete' actions, maybe a 'protect' would make sense and a relaxing of the 'keep' action that works like 'protect' currently.
 
 ## outro
 
