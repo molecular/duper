@@ -3,9 +3,9 @@ var _ = require('lodash');
 var crypto = require('crypto');
 var fs_extra = require('fs-extra');
 
-const hash_sampling_percent = 100; // what percentage of files to sample when hashing (100 = no sampling)
+const hash_sampling_percent = 0.1; // what percentage of files to sample when hashing (100 = no sampling)
 const dry_run = false;
-const blocksize = 512;
+const blocksize = 1024;
 
 function adddir( path, progress_callback, progress ) {
 	//console.log("adddir( " + path + " )" );
@@ -64,13 +64,15 @@ function calc_hash( file ) {
 }
 
 var by_hash = {}
+var by_hash_size = 0;
 function addfile_by_hash( file, progress_callback ) {
 	var hash = calc_hash( file );
 
 	if ( by_hash[hash] === undefined ) by_hash[hash] = [];
 	by_hash[hash].push( file );
 
-	progress_callback( _.keys( by_hash ).length );
+	by_hash_size += 1;
+	progress_callback( by_hash_size );
 }
 
 function remove_files( base_path, destination, files ) {
@@ -126,7 +128,7 @@ adddir( dir, (progress) => {
 		var pstr = _.map( progress, (p) => {
 			return "" + p.current + '/' + p.count;
 		}).join( ' ' );
-		process.stdout.write( 'scanning progress: ' + pstr + '                                                                                          \r');
+		process.stdout.write( 'scanning progress: ' + pstr + '                                      \r');
 	}
 });
 
@@ -139,7 +141,7 @@ console.log('found', _.keys( dupes_by_size ).length, 'clusters by size match' );
 
 // hash the duplicate files, clustering by file hash
 
-console.log( '\ncalculating file hashes of file in equally-sized clusters... (using ' + hash_sampling_percent + '% content sampling)' );
+console.log( '\ncalculating file hashes of files in equally-sized clusters... (using ' + hash_sampling_percent + '% content sampling)' );
 var flat_dupes = _.flattenDeep( dupes_by_size );
 flat_dupes.forEach( (file) => {
 	addfile_by_hash( file, (count) => {
@@ -158,7 +160,7 @@ var dupes_by_hash = _.filter( by_hash, (entry) => {
 
 console.log('found', _.keys( dupes_by_hash ).length, 'clusters by hash match' );
 
-console.log("dupes_by_hash", dupes_by_hash);
+//console.log("dupes_by_hash", dupes_by_hash);
 
 // select all except one file per cluster to delete
 
@@ -228,9 +230,10 @@ deletion_list = _.flatten( deletion_list );
 console.log("final prefs: ", _.reduce( prefs, (a, p) => { return a + " " + p.substring + ':' + p.preference; }, ""));
 
 //console.log( "will delete the following files:\n" + deletion_list.join('\n') );
-console.log("deletion_list", deletion_list);
+//console.log("deletion_list", deletion_list);
 console.log("(", deletion_list.length, "files )");
 
+dir = dir.replace(/\/+$/, "");
 var dest_dir = dir.split('/').slice(0, -1).join('/') + '/removed_by_duper(' + dir.split('/').slice(-1)[0] + ')';
 remove_files( dir, dest_dir, deletion_list );
-console.log("", deletion_list.length, "files have been moved to", dest_dir);
+console.log("", deletion_list.length, "files", (dry_run?"would":""), "have been moved to", dest_dir);
