@@ -5,6 +5,7 @@ var fs_extra = require('fs-extra');
 
 const hash_sampling_percent = 100; // what percentage of files to sample when hashing (100 = no sampling)
 const dry_run = false;
+const blocksize = 512;
 
 function adddir( path, progress_callback, progress ) {
 	//console.log("adddir( " + path + " )" );
@@ -46,7 +47,6 @@ function calc_hash( file ) {
 	if ( hash_sampling_percent == 100 || stats.size < 1024*1024 ) {
 		shasum.update( fs.readFileSync( file ) );
 	} else {
-		const blocksize = 8192;
 		var buffer = new Buffer( blocksize );
 		var block_count = stats.size / blocksize;
 		var loop_count = block_count * (hash_sampling_percent / 100);
