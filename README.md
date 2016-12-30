@@ -21,7 +21,7 @@ with
 
         <directory>     the folder to scan for duplicates
         <substring>     string to use for matching filename (incl. path)
-        <preference>    [keep|delete] the action to take if filename (incl. path) matches <substring>
+        <preference>    [keep|delete|protect] the action to take if filename (incl. path) matches <substring>
 
 ```
 
@@ -53,8 +53,10 @@ Say you have a collection of files and you regularly swap drives with a friend. 
 with your existing collection stored in `/a/b/collection` and the files you want to import in `/a/b/to_import`, you could use duper as follows:
 
 ```
-> node duper.js /a/b collection:keep
+> node duper.js /a/b collection:protect
 ```
+
+The `collection:protect` rule effects that no file having 'collection' in it's name/path will be deleted.
 
 afterwards your directory structure would look like:
 
@@ -101,10 +103,11 @@ Because of this, duper can be given a set of rules of the following form:
 
 The sequence of those rules is relevant: for each file in a cluster, duper will find the first rule *matching* the given file. A rule matches when the file's name (including the full path) contains `<substring>'. The file is added to a set of files related by the `<preference>` of the matching rule. 
 
-At this point there are 3 sets of files per cluster:
+At this point there are 4 sets of files per cluster:
 
   * **'delete'**: files whose first matching rule has `<preference> = 'delete'`
   * **'keep'**: files whose first matching rule has `<preference> = 'keep'`
+  * **'protect'**: files whose first matching rule has `<preference> = 'protect'`
   * **unmatched**: files with no matching rule
 
 #### handling unmatched files
@@ -113,7 +116,7 @@ In case the 'delete'-set already contains *n - 1* files, we're done here and the
 
 Otherwise we need to add more files from the unmatched-set. 
 
-> Note: files from the 'keep'-set are never removed. This means that files matching a rule with `<preference> == 'keep'` are protected from removal.
+> Note: files from the 'protect'-set are never removed. This means that files matching a rule with `<preference> == 'protect'` are protected from removal. Files from the 'keep'-set can be removed, but have lower priority than files from the unmatched-set.
 
 ### removal
 
@@ -157,6 +160,7 @@ Here's a short, unsorted list of user-cases / todos
  * in addition to removal of a file, hard-/sym-links could be placed as done in http://doubles.sourceforge.net/
  * in addition to the 'keep' and 'delete' actions, maybe a 'protect' would make sense and a relaxing of the 'keep' action that works like 'protect' currently.
  * 'undo' mode would be good that moves files back from the "removed_by_duper(<dir>)" directory
+ * regarding my use-case (audio files) it might be desirable to determine file equality diffently, for example by only looking at the (encoded) audio data, not the meta tags. The existance of two audio files that only differ in their metadata seems to be quite common (at least in my dataset) and can be explained by use tag-modifying software (taggers).
 
 ## outro
 

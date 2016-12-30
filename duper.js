@@ -96,7 +96,7 @@ usage:\n\tduper.js <directory> [<substring>:<preference>]*\n\n\
 with\n\
 	<directory> \tthe folder to scan for duplicates\n\
 	<substring> \tstring to use for matching filename (incl. path)\n\
-	<preference> \t[keep|delete] the action to preferrably take if filename (incl. path) matches <substring>\n\
+	<preference> \t[keep|delete|protect] the action to preferrably take if filename (incl. path) matches <substring>\n\
 how it works:\n\n\
 	see README.md\n\
 ");
@@ -137,7 +137,9 @@ adddir( dir, (progress) => {
 dupes_by_size = _.filter( by_size, (entry) => {
 	return entry.length > 1;
 });
+console.log("dupes_by_size", dupes_by_size);
 console.log('found', _.keys( dupes_by_size ).length, 'clusters by size match' );
+
 
 // hash the duplicate files, clustering by file hash
 
@@ -170,7 +172,8 @@ var deletion_list = _.map( dupes_by_hash, ( cluster ) => {
 	// map files in each cluster to actions by matching preference substring to filename 
 	var actions = {
 		'delete': [],
-		'keep': []
+		'keep': [],
+		'protect': []
 	};
 
 	_.forEach( cluster, (file) => {
@@ -186,28 +189,36 @@ var deletion_list = _.map( dupes_by_hash, ( cluster ) => {
 	// add more items ot 'delete' action until all except one are added
 	var quantity_to_add = _.keys(cluster).length - actions['delete'].length - 1
 	if ( quantity_to_add > 0 ) {
-		// determine array of files neither in 'delete' nor 'keep' (those can be added to 'delete')
+		// determine array of files neither in 'delete' nor 'keep' nor 'protect' (those can be added to 'delete')
 		var unmatched = _.filter( cluster, (file) => {
 			return (
 				actions['delete'].indexOf( file ) == -1 &&
-				actions['keep'].indexOf( file ) == -1 
+				actions['keep'].indexOf( file ) == -1 &&
+				actions['protect'].indexOf( file ) == -1 
 			);
 		});
+		// also add 'keep' files as a last resort
+		unmatched = _.concat( unmatched, actions['keep']);
 		var additional_delete = unmatched.slice( 0, quantity_to_add)
 		actions['delete'] = actions['delete'].concat( additional_delete );
-		// add the remainder of the unmatched files to 'keep'
-		actions['keep'] = actions['keep'].concat( unmatched.slice( quantity_to_add ) );
+		// add the remainder of the unmatched files to 'keep' (if not already in 'keep')
+		actions['keep'] = actions['keep'].concat( 
+			_.difference( unmatched.slice( quantity_to_add ), actions['keep'] )
+		);
 		// since we made a decision (without using a rule) about which file to delete,
 		// we try to achieve some consistency regarding this selection in the future
-		// by adding preferences generated from differences between the names of
+		// by adding preferences generated from differences between the tokenized names of
 		// the selected (for deletion) and the non-selected files
 		var keep_tokens = _.reduce( actions['keep'], (result, file) => {
+			return result.concat( file.split(/[^\w]/) );
+		}, []);
+		var protect_tokens = _.reduce( actions['protect'], (result, file) => {
 			return result.concat( file.split(/[^\w]/) );
 		}, []);
 		var selected_file_tokens = _.reduce( additional_delete, (result, file) => {
 			return result.concat( file.split(/[^\w]/) );
 		}, []);
-		var delete_tokens = _.difference( selected_file_tokens, keep_tokens );
+		var delete_tokens = _.difference( selected_file_tokens, _.concat( keep_tokens, protect_tokens ) );
 		// add the identifying tokens as substrings for delete preferences
 		delete_tokens.forEach( (token) => {
 			if (
