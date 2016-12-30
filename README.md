@@ -160,6 +160,7 @@ Here's a short, unsorted list of user-cases / todos
  * in addition to removal of a file, hard-/sym-links could be placed as done in http://doubles.sourceforge.net/
  * 'undo' mode would be good that moves files back from the "removed_by_duper(<dir>)" directory
  * regarding my use-case (audio files) it might be desirable to determine file equality diffently, for example by only looking at the (encoded) audio data, not the meta tags. The existance of two audio files that only differ in their metadata seems to be quite common (at least in my dataset) and can be explained by use tag-modifying software (taggers).
+ * automated tests would be good considering we're modifying users filesystems
 
 ## takeaways
 
