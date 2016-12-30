@@ -27,11 +27,44 @@ with
 
 ## examples
 
+### my own use-case
+
+my own use-case was as follows: a friend and a friend of his turned up at my house. Each of them with a hard-drive containing music files (mainly flacs). I copied all the files (4 TB). Turns out the one friend had received most of his stuff from the other friend and the other friend had reorganized his collection into directories (in /by_artist/ directory). Hence there were many Duplicates I wanted to remove.
+
+I used duper like this:
+
 ```
 > node ~/duper/duper.js /mnt/haven/m Kopie:delete by_artist:keep
 ```
 
 files containing 'Kopie' in their path or name will be preferred for removal, files containing 'by_artist' in their path or name will be protected from removal.
+
+Duper found 89,723 clusters (by size) between the 317,772 files I copied. Hashing them at 0.2% sample percentage took roughly 2 hours (magnetic disc). As deemed likely, the number of files with equal size but differing hash was 0, so there were 89,723 clusters of files with identical hash (and supposedly identical content).
+
+Evaluating how well the selection scheme worked is hard due to the sheer amount of files.
+
+### potentially common use-case: import of new files
+
+Say you have a collection of files and you regularly swap drives with a friend. Now, I didn't test this, but assuming you can symlink or mount drives so that you directory structure is as follows:
+
+ * `/a/b/collection`
+ * `/a/b/to_import`
+
+with your existing collection stored in `/a/b/collection` and the files you want to import in `/a/b/to_import`, you could use duper as follows:
+
+```
+> node duper.js /a/b collection:keep
+```
+
+afterwards your directory structure would look like:
+
+ * `/a/b/collection`
+ * `/a/b/to_import`
+ * `/a/removed_by_duper(b)`
+
+with `/a/b/to_import` containing only files you don't already have in `/a/b/collection` and `/a/b/removed_by_duper(b)` containing those you alread have.
+
+You could then copy `/a/b/to_import` into your collections and delete `/a/removed_by_duper(b)`.
 
 ## what it does
 
@@ -120,8 +153,9 @@ Here's a short, unsorted list of user-cases / todos
  * currently, *all* files are checked. Some pre-filtering could be appropriate.
  * partial content hashing ("hash_sampling_percent") isn't as effective as expected. some research might be adequate.
  * limiting rule-matching to only the path/filename ans simple substring matching is probably inadequate for many use-cases
+ * rule-matching by substring is hacky at best. False positives are likely. thought needed.
  * in addition to removal of a file, hard-/sym-links could be placed as done in http://doubles.sourceforge.net/
 
 ## outro
 
-thanks for using, please feedback, fork, pull-request
+thanks for using, please feedback, fork, pull-request, create issues all you like
