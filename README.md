@@ -114,7 +114,7 @@ At this point there are 4 sets of files per cluster:
 
 In case the 'delete'-set already contains *n - 1* files, we're done here and the 'delete'-set is the set of files to be removed.
 
-Otherwise we need to add more files from the unmatched-set. 
+Otherwise more files from the unmatched-set and the 'keep'-set (in that order) are added.
 
 > Note: files from the 'protect'-set are never removed. This means that files matching a rule with `<preference> == 'protect'` are protected from removal. Files from the 'keep'-set can be removed, but have lower priority than files from the unmatched-set.
 
@@ -161,6 +161,10 @@ Here's a short, unsorted list of user-cases / todos
  * in addition to the 'keep' and 'delete' actions, maybe a 'protect' would make sense and a relaxing of the 'keep' action that works like 'protect' currently.
  * 'undo' mode would be good that moves files back from the "removed_by_duper(<dir>)" directory
  * regarding my use-case (audio files) it might be desirable to determine file equality diffently, for example by only looking at the (encoded) audio data, not the meta tags. The existance of two audio files that only differ in their metadata seems to be quite common (at least in my dataset) and can be explained by use tag-modifying software (taggers).
+
+## takeaways
+
+ * I regret not having used a proper cmdline parser from the beginning. I considered it but didn't want to risk being delayed from implementing the meaty stuff. Turns out this decision actually kept me (on multiple occasions) from implementing features that would've been relatively easy to realize later on.
 
 ## outro
 
