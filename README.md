@@ -1,6 +1,6 @@
 # duper
 
-finds duplicate files (based on content being identical) and moves them elsewhere (retaining directory structure) for manual review / deletion
+cmdline tool (no gui) that finds duplicate files (based on content being identical) and moves them elsewhere (retaining directory structure) for manual review / deletion
 
 ## installation / dependencies
 
@@ -156,6 +156,7 @@ Here's a short, unsorted list of user-cases / todos
  * rule-matching by substring is hacky at best. False positives are likely. thought needed.
  * in addition to removal of a file, hard-/sym-links could be placed as done in http://doubles.sourceforge.net/
  * in addition to the 'keep' and 'delete' actions, maybe a 'protect' would make sense and a relaxing of the 'keep' action that works like 'protect' currently.
+ * 'undo' mode would be good that moves files back from the "removed_by_duper(<dir>)" directory
 
 ## outro
 
