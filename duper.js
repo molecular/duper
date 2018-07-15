@@ -3,9 +3,9 @@ var _ = require('lodash');
 var crypto = require('crypto');
 var fs_extra = require('fs-extra');
 
-const hash_sampling_percent = 0.1; // what percentage of files to sample when hashing (100 = no sampling)
-const dry_run = false;
-const blocksize = 512;
+const hash_sampling_percent = 1; // what percentage of files to sample when hashing (100 = no sampling)
+const dry_run = true;
+const blocksize = 4096;
 
 function adddir( path, progress_callback, progress ) {
 	//console.log("adddir( " + path + " )" );
@@ -47,7 +47,7 @@ function calc_hash( file ) {
 	if ( hash_sampling_percent == 100 || stats.size < 1024*1024 ) {
 		shasum.update( fs.readFileSync( file ) );
 	} else {
-		var buffer = new Buffer( blocksize );
+		var buffer = new Buffer.alloc( blocksize );
 		var block_count = stats.size / blocksize;
 		var loop_count = block_count * (hash_sampling_percent / 100);
 		var block_space = block_count / loop_count;
@@ -137,7 +137,7 @@ adddir( dir, (progress) => {
 dupes_by_size = _.filter( by_size, (entry) => {
 	return entry.length > 1;
 });
-//console.log("dupes_by_size", dupes_by_size);
+console.log("dupes_by_size", dupes_by_size);
 console.log('found', _.keys( dupes_by_size ).length, 'clusters by size match' );
 
 
@@ -161,8 +161,7 @@ var dupes_by_hash = _.filter( by_hash, (entry) => {
 });
 
 console.log('found', _.keys( dupes_by_hash ).length, 'clusters by hash match' );
-
-//console.log("dupes_by_hash", dupes_by_hash);
+console.log("dupes_by_hash", dupes_by_hash);
 
 // select all except one file per cluster to delete
 
